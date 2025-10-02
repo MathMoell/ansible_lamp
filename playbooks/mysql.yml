@@ -1,0 +1,43 @@
+- name: "Setup MySQL server"
+  hosts: lamp_servers
+  become: yes
+
+  # Küsi root parooli jooksvalt (ei tohi hardcode’ida)
+  vars_prompt:
+    - name: "mysql_root_password"
+      prompt: "Enter MySQL root password"
+      private: yes
+
+  tasks:
+    - name: "Install MySQL server"
+      apt:
+        name: mysql-server
+        state: present
+        update_cache: yes
+
+    - name: "Ensure Python MySQL module is installed"
+      apt:
+        name: python3-mysqldb
+        state: present
+
+    - name: "Secure MySQL root user"
+      mysql_user:
+        login_user: root
+        login_password: ""
+        user: root
+        password: "{{ mysql_root_password }}"
+        host_all: yes
+        state: present
+
+    - name: "Create database"
+      mysql_db:
+        name: lamp_db
+        state: present
+
+    - name: "Create database user"
+      mysql_user:
+        name: lamp_user
+        password: "{{ mysql_root_password }}"
+        priv: 'lamp_db.*:ALL'
+        host: localhost
+        state: present

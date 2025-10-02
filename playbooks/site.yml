@@ -1,0 +1,4 @@
+- import_playbook: system.yml   # Süsteemi ettevalmistus (update, firewall, timezone)
+- import_playbook: apache.yml    # Apache setup
+- import_playbook: mysql.yml     # MySQL setup
+- import_playbook: php.yml       # PHP ja test leht

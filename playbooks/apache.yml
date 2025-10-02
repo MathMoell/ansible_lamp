@@ -1,0 +1,30 @@
+- name: "Setup Apache"
+  hosts: lamp_servers
+  become: yes
+  tasks:
+    - name: "Install Apache"
+      apt:
+        name: apache2
+        state: present
+
+    - name: "Enable modules"
+      apache2_module:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - rewrite
+        - headers
+        - ssl
+      notify: Restart Apache
+
+    - name: "Deploy virtual host"
+      template:
+        src: ../templates/vhost.conf.j2
+        dest: /etc/apache2/sites-available/lamp.local.conf
+      notify: Restart Apache
+
+  handlers:
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
