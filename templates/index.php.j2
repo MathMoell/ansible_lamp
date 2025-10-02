@@ -1,0 +1,11 @@
+<?php
+echo "<h1>PHP Test Page</h1>";
+echo "<p>PHP Version: " . phpversion() . "</p>";
+
+$mysqli = new mysqli("localhost", "lamp_user", "{{ mysql_root_password }}", "lamp_db");
+
+if ($mysqli->connect_error) {
+    die("<p>Connection failed: " . $mysqli->connect_error . "</p>");
+}
+echo "<p>Connected to MySQL successfully</p>";
+?>
